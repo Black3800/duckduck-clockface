@@ -3,10 +3,12 @@ import * as mqtt from 'mqtt/dist/mqtt.min'
 
 export const ClientContext = createContext()
 export const AlarmContext = createContext([])
+export const AlarmTriggerContext = createContext({})
 
 const MqttWrapper = ({ deviceCode, protocol, host, clientId, port, username, password, children }) => {
   const [client, setClient] = useState(null)
   const [alarmList, setAlarmList] = useState([])
+  const [alarmTrigger, setAlarmTrigger] = useState({})
 
   const [payload, setPayload] = useState({})
   const _alarmList = []
@@ -69,6 +71,10 @@ const MqttWrapper = ({ deviceCode, protocol, host, clientId, port, username, pas
         ...alarmList,
         payload.payload
       ])
+    } else if (payload.topic === `${deviceCode}/trigger-alarm`) {
+      const index = alarmList.findIndex((e) => e.id === payload.payload.id)
+      alarmList[index].trigger = true
+      setAlarmList([...alarmList])
     }
   }, [payload])
 
@@ -91,7 +97,9 @@ const MqttWrapper = ({ deviceCode, protocol, host, clientId, port, username, pas
   return (
     <ClientContext.Provider value={client}>
       <AlarmContext.Provider value={alarmList}>
-        {children}
+        <AlarmTriggerContext.Provider value={{alarmTrigger, setAlarmTrigger}}>
+          {children}
+        </AlarmTriggerContext.Provider>
       </AlarmContext.Provider>
     </ClientContext.Provider>
   )

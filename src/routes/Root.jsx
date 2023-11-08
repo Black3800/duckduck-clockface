@@ -1,28 +1,26 @@
 import React, { useContext, useEffect } from 'react'
-import { AlarmContext } from '../components/MqttWrapper'
-import AlarmManager from '../components/AlarmManager'
+import { useNavigate } from 'react-router-dom'
+import { AlarmContext, AlarmTriggerContext } from '../components/MqttWrapper'
+import Clock from '../components/Clock'
 
 export default function Root() {
   const alarmList = useContext(AlarmContext)
+  const { setAlarmTrigger } = useContext(AlarmTriggerContext)
+  const navigate = useNavigate()
 
   useEffect(() => {
-    // for (const alarm of alarmList) {
-    //   console.log(alarm)
-    // }
+    for (const alarm of alarmList) {
+      console.log(alarm)
+      if (alarm.trigger === true) {
+        setAlarmTrigger(alarm)
+        navigate('/alarm')
+      }
+    }
   }, [alarmList])
 
   return (
     <>
-      {/* <AlarmManager>
-        <div>hello</div>
-      </AlarmManager> */}
-      Hello
-      {alarmList.map((e, i) => <div>
-        <ul>
-          {Object.keys(e).map((ek, ik) => <li>{`${ek}: ${e[ek]}`}</li>)}
-        </ul>
-        <br/>
-      </div>)}
+      <Clock/>
     </>
   );
 }

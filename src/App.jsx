@@ -19,7 +19,7 @@ const router = createBrowserRouter([
 
 const App = ({}) => {
     return (
-        <>
+        <div id="app">
             <MqttWrapper
                 deviceCode='SSAC19'
                 protocol='wss'
@@ -31,7 +31,7 @@ const App = ({}) => {
             >
                 <RouterProvider router={router} />
             </MqttWrapper>
-        </>
+        </div>
     )
 }
 

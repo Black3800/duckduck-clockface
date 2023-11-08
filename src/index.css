@@ -1,17 +1,33 @@
+@import url('public/fonts.css');
+
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Rubik', sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
+  width: 100vw;
+  height: 100vh;
+
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+
+  --ducky-yellow: #F7DE64;
+  --frost-white: #FDFEFD;
+}
+
+html, body, #root, #root>div, #app {
+  width: 100%;
+  height: 100%
+}
+
+#app {
+  display: flex;
+  justify-content: center;
 }
 
 a {
@@ -29,6 +45,11 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  background: var(--ducky-yellow) url('duckbg.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed;
 }
 
 h1 {
@@ -66,4 +87,68 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+.clock {
+  display: flex;
+  min-width: 80%;
+  align-items: center;
+  justify-content: center;
+}
+
+.clock-num {
+  font-size: 288px;
+  font-weight: 800;
+  color: var(--frost-white);
+  -webkit-text-stroke: 2px rgba(42, 42, 42, 0.3);
+}
+
+/* @keyframes tick {
+
+  0% {
+    opacity: 1;
+  }
+  45% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.2;
+  }
+  55% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+  
+} */
+
+@keyframes tick {
+
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.2;
+  }
+  
+}
+
+.clock-tick {
+  animation: tick 1s infinite;
+}
+
+.visible {
+  visibility: visible;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+.clock-num-seconds {
+  font-size: 144px;
+  font-weight: 600;
+  color: var(--frost-white);
+  -webkit-text-stroke: none;
 }
