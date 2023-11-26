@@ -1,4 +1,4 @@
-@import url('public/fonts.css');
+@import url('/fonts.css');
 
 :root {
   font-family: 'Rubik', sans-serif;
@@ -17,7 +17,9 @@
   -webkit-text-size-adjust: 100%;
 
   --ducky-yellow: #F7DE64;
+  --sky-blue: #3EB7F4;
   --frost-white: #FDFEFD;
+  --steel-black: #111111;
 }
 
 html, body, #root, #root>div, #app {
@@ -26,8 +28,8 @@ html, body, #root, #root>div, #app {
 }
 
 #app {
-  display: flex;
-  justify-content: center;
+  /* display: flex;
+  justify-content: center; */
 }
 
 a {
@@ -45,7 +47,7 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
-  background: var(--ducky-yellow) url('duckbg.png');
+  background: var(--ducky-yellow) url('/duckbg.png');
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
@@ -89,15 +91,72 @@ button:focus-visible {
   }
 }
 
+.register {
+  width: 100%;
+  height: 100%;
+  background: var(--frost-white);
+}
+
+.connect {
+  width: 100%;
+  height: 100%;
+  background: var(--ducky-yellow);
+}
+
+.wifi-selector, .bulb-ip {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 36px;
+}
+
+.bulb-ip > h3 {
+  margin: 30px;
+  color: var(--steel-black);
+}
+
+.bulb-ip-input {
+  width: 300px;
+  height: 75px;
+  font-size: 36px;
+  font-family: 'Rubik', sans-serif;
+  padding: 10px;
+  line-height: 50px;
+  border-radius: 10px;
+  margin: 10px;
+  box-sizing: border-box;
+  background: var(--frost-white);
+}
+
+.bulb-ip-submit {
+  height: 75px;
+  font-size: 36px;
+  font-family: 'Rubik', sans-serif;
+  padding: 10px;
+  border-radius: 10px;
+  background: var(--sky-blue);
+  color: var(--frost-white);
+  box-sizing: border-box;
+}
+
 .clock {
   display: flex;
-  min-width: 80%;
-  align-items: center;
-  justify-content: center;
+  width: 950px;
+  min-width: 950px;
+  height: 400px;
+  min-height: 400px;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 24px;
+  position: fixed;
+  top: 160px;
+  left: 165px;
 }
 
 .clock-num {
-  font-size: 288px;
+  font-size: 272px;
   font-weight: 800;
   color: var(--frost-white);
   -webkit-text-stroke: 2px rgba(42, 42, 42, 0.3);
@@ -129,13 +188,13 @@ button:focus-visible {
     opacity: 1;
   }
   100% {
-    opacity: 0.2;
+    opacity: 0.3;
   }
   
 }
 
 .clock-tick {
-  animation: tick 1s infinite;
+  /* animation: tick 1s infinite; */
 }
 
 .visible {
@@ -147,8 +206,33 @@ button:focus-visible {
 }
 
 .clock-num-seconds {
-  font-size: 144px;
+  width: 172px;
+  min-width: 172px;
+  font-size: 128px;
+  text-align: right;
   font-weight: 600;
   color: var(--frost-white);
-  -webkit-text-stroke: none;
+  -webkit-text-stroke: 2px rgba(42, 42, 42, 0.3);
+}
+
+.date {
+  font-size: 48px;
+  color:  var(--frost-white);
+  width: 950px;
+  text-align: center;
+  position: fixed;
+  top: 522px;
+  left: 165px;
+}
+
+.alarm-popup {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+}
+
+.alarm-popup-icon {
+  width: 72px;
+  height: 72px;
+  background: var(--sky-blue);
 }

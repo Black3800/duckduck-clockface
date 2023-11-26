@@ -1,6 +1,7 @@
 import React, { createContext, useEffect, useState } from 'react'
 import * as mqtt from 'mqtt/dist/mqtt.min'
 
+export const RegisterContext = createContext()
 export const ClientContext = createContext()
 export const AlarmContext = createContext([])
 export const AlarmTriggerContext = createContext({})
@@ -9,6 +10,7 @@ const MqttWrapper = ({ deviceCode, protocol, host, clientId, port, username, pas
   const [client, setClient] = useState(null)
   const [alarmList, setAlarmList] = useState([])
   const [alarmTrigger, setAlarmTrigger] = useState({})
+  const [isRegistered, setIsRegistered] = useState(localStorage.getItem('isRegistered') == 'true' || false)
 
   const [payload, setPayload] = useState({})
   const _alarmList = []
@@ -65,7 +67,15 @@ const MqttWrapper = ({ deviceCode, protocol, host, clientId, port, username, pas
   }, [])
 
   useEffect(() => {
-    if (payload.topic === `${deviceCode}/create-alarm`) {
+    if (payload.topic === `${deviceCode}/register`) {
+      console.log(payload.payload.deviceCode)
+      if (payload.payload.deviceCode == deviceCode) {
+        localStorage.setItem('isRegistered', true)
+        setIsRegistered(true)
+        console.log('set', isRegistered)
+      }
+    }
+    else if (payload.topic === `${deviceCode}/create-alarm`) {
       delete payload.topic
       setAlarmList([
         ...alarmList,
@@ -77,6 +87,10 @@ const MqttWrapper = ({ deviceCode, protocol, host, clientId, port, username, pas
       setAlarmList([...alarmList])
     }
   }, [payload])
+
+  useEffect(() => {
+    setTimeout(() => handle_message(`${deviceCode}/register`, `{"deviceCode":"${deviceCode}"}`), 10000)
+  }, [])
 
   const mqttSub = (subscription) => {
     if (client) {
@@ -96,11 +110,13 @@ const MqttWrapper = ({ deviceCode, protocol, host, clientId, port, username, pas
 
   return (
     <ClientContext.Provider value={client}>
-      <AlarmContext.Provider value={alarmList}>
-        <AlarmTriggerContext.Provider value={{alarmTrigger, setAlarmTrigger}}>
-          {children}
-        </AlarmTriggerContext.Provider>
-      </AlarmContext.Provider>
+      <RegisterContext.Provider value={isRegistered}>
+        <AlarmContext.Provider value={alarmList}>
+          <AlarmTriggerContext.Provider value={{alarmTrigger, setAlarmTrigger}}>
+            {children}
+          </AlarmTriggerContext.Provider>
+        </AlarmContext.Provider>
+      </RegisterContext.Provider>
     </ClientContext.Provider>
   )
 }

@@ -11,7 +11,7 @@ export default function AlarmManager({children}) {
     for (const alarm of alarmList) {
         console.log(alarmTimeout.current)
         console.log(alarm.id)
-        console.log(typeof  alarm.id)
+        console.log(typeof alarm.id)
         console.log(alarmTimeout.current.hasOwnProperty(alarm.id))
       if (!alarmTimeout.current.hasOwnProperty(alarm.id)) {
         // const timeout = setTimeout(() => {
