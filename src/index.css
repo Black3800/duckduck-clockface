@@ -19,7 +19,8 @@
   --ducky-yellow: #F7DE64;
   --sky-blue: #3EB7F4;
   --frost-white: #FDFEFD;
-  --steel-black: #111111;
+  --steel-black: #2A2A2A;
+  --cocoa: #6D4A09;
 }
 
 html, body, #root, #root>div, #app {
@@ -94,7 +95,24 @@ button:focus-visible {
 .register {
   width: 100%;
   height: 100%;
-  background: var(--frost-white);
+  background-image: url('register.png');
+  background-position: center;
+  background-size: cover;
+  margin: 0;
+}
+
+.register-code {
+  position: absolute;
+  top: 290px;
+  left: 626px;
+  width: 425px;
+  height: 130px;
+  font-size: 96px;
+  font-weight: 700;
+  color: var(--ducky-yellow);
+  text-align: center;
+  text-shadow: 0px 0px 1px 0px var(--cocoa);
+  text-shadow: rgb(109, 74, 9) 1px 0px 0px, rgb(109, 74, 9) 0.540302px 0.841471px 0px, rgb(109, 74, 9) -0.416147px 0.909297px 0px, rgb(109, 74, 9) -0.989992px 0.14112px 0px, rgb(109, 74, 9) -0.653644px -0.756802px 0px, rgb(109, 74, 9) 0.283662px -0.958924px 0px, rgb(109, 74, 9) 0.96017px -0.279415px 0px;
 }
 
 .connect {
@@ -223,16 +241,4 @@ button:focus-visible {
   position: fixed;
   top: 522px;
   left: 165px;
-}
-
-.alarm-popup {
-  position: fixed;
-  top: 16px;
-  left: 16px;
-}
-
-.alarm-popup-icon {
-  width: 72px;
-  height: 72px;
-  background: var(--sky-blue);
 }

@@ -17,7 +17,7 @@ export default function ConnectBulb() {
       'ip': IPInput
     }).then(response => {
       if (response.data.status === 'ok') {
-        navigate('/home')
+        navigate('/register')
       } else {
         alert('Cannot connect to bulb')
       }

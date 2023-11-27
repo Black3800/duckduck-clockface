@@ -54,7 +54,13 @@ export default function AlarmPopup() {
     } else {
       console.log("No future alarms found.");
     }
+    
+    // alarmList.toSorted((a, b) => GetUpcomingDayIndex(a.repeat_days) - GetUpcomingDayIndex(b.repeat_days))
   }, [alarmList])
+
+  function formatAlarmTime(time) {
+    return `${time.hours}:${time.minutes.toString().padStart(2,'0')}`
+  }
 
   return (
     <Paper elevation={3}>
@@ -75,10 +81,13 @@ export default function AlarmPopup() {
           <AlarmIcon sx={{ fontSize: 60, color: 'var(--frost-white)' }}/>
         </Container>
         <Container sx={{
+          width: '400px',
           height: '72px',
+          lineHeight: '72px',
+          fontSize: '24px',
           background: 'var(--frost-white)',
           margin: 0
-        }}>{alarmList.length > 0 ? <Box>{alarmList.toSorted((a, b) => GetUpcomingDayIndex(a.repeat_days) - GetUpcomingDayIndex(b.repeat_days))[0].description}</Box> : 'None'}</Container>
+        }}>{alarmList.length > 0 ? <Box>Next alarm at {formatAlarmTime(alarmList.toSorted((a, b) => GetUpcomingDayIndex(a.repeat_days) - GetUpcomingDayIndex(b.repeat_days))[0].wake_up_time)}</Box> : 'No alarm set'}</Container>
       </Grid>
     </Paper>
   );

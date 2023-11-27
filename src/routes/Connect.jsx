@@ -5,6 +5,7 @@ import axios from 'axios'
 
 import { BaseURI, IlluminationURI } from '../util/Constant'
 import WifiSelector from '../components/WifiSelector'
+import { login } from '../util/Api'
 
 export default function Connect() {
   const navigate = useNavigate()
@@ -21,7 +22,7 @@ export default function Connect() {
   function onConnected() {
     axios.get(`${IlluminationURI}/state`).then((response) => {
       if (response.data.status === 'ok') {
-        navigate('/home')
+        navigate('/register')
       } else {
         navigate('/connect-bulb')
       }

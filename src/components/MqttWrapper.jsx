@@ -1,12 +1,17 @@
-import React, { createContext, useEffect, useState } from 'react'
+import React, { createContext, useEffect, useState, useRef } from 'react'
 import * as mqtt from 'mqtt/dist/mqtt.min'
+import { getAlarm, login } from '../util/Api'
+import { DEVICE_CODE, MQTT_PASS, MQTT_USER } from '../util/Config'
+import { MqttHost, MqttPort } from '../util/Constant'
 
 export const RegisterContext = createContext()
 export const ClientContext = createContext()
 export const AlarmContext = createContext([])
 export const AlarmTriggerContext = createContext({})
 
-const MqttWrapper = ({ deviceCode, protocol, host, clientId, port, username, password, children }) => {
+const MqttWrapper = ({ children }) => {
+  const initialized = useRef(false);
+ 
   const [client, setClient] = useState(null)
   const [alarmList, setAlarmList] = useState([])
   const [alarmTrigger, setAlarmTrigger] = useState({})
@@ -14,6 +19,14 @@ const MqttWrapper = ({ deviceCode, protocol, host, clientId, port, username, pas
 
   const [payload, setPayload] = useState({})
   const _alarmList = []
+
+  const deviceCode = DEVICE_CODE
+  const protocol = 'ws'
+  const host = MqttHost
+  const clientId = DEVICE_CODE
+  const port = MqttPort
+  const username = MQTT_USER
+  const password = MQTT_PASS
 
   const mqttConnect = (host, mqttOption) => {
     setClient(mqtt.connect(host, mqttOption))
@@ -45,7 +58,7 @@ const MqttWrapper = ({ deviceCode, protocol, host, clientId, port, username, pas
       })
 
       client.on('reconnect', () => {
-        // setConnectStatus('Reconnecting')
+        console.log('reconn')
       })
       
       client.on('message', handle_message)
@@ -53,26 +66,34 @@ const MqttWrapper = ({ deviceCode, protocol, host, clientId, port, username, pas
   }, [client])
 
   useEffect(() => {
-    const url = `${protocol}://${host}:${port}/mqtt`
-    const options = {
-      clientId,
-      username,
-      password,
-      clean: false,
-      reconnectPeriod: 1000, // ms
-      connectTimeout: 30 * 1000, // ms
-      protocolVersion: 5
+    if (!initialized.current) {
+      initialized.current = true
+      const url = `${protocol}://${host}:${port}/mqtt`
+      const options = {
+        clientId,
+        username,
+        password,
+        clean: false,
+        reconnectPeriod: 1000, // ms
+        connectTimeout: 30 * 1000, // ms
+        protocolVersion: 5
+      }
+      mqttConnect(url, options)
+      getAlarm().then((response) => {
+        if (response.data.success === true) {
+          setAlarmList([...response.data.data])
+        }
+      }).catch(error => {
+        login()
+      })
     }
-    mqttConnect(url, options)
   }, [])
 
   useEffect(() => {
     if (payload.topic === `${deviceCode}/register`) {
-      console.log(payload.payload.deviceCode)
-      if (payload.payload.deviceCode == deviceCode) {
+      if (payload.payload.device_code == deviceCode) {
         localStorage.setItem('isRegistered', true)
         setIsRegistered(true)
-        console.log('set', isRegistered)
       }
     }
     else if (payload.topic === `${deviceCode}/create-alarm`) {
@@ -81,17 +102,17 @@ const MqttWrapper = ({ deviceCode, protocol, host, clientId, port, username, pas
         ...alarmList,
         payload.payload
       ])
+    } else if (payload.topic === `${deviceCode}/delete-alarm`) {
+      setAlarmList([
+        ...alarmList.filter((alarm) => alarm.id != payload.payload.id)
+      ])
     } else if (payload.topic === `${deviceCode}/trigger-alarm`) {
       const index = alarmList.findIndex((e) => e.id === payload.payload.id)
       alarmList[index].trigger = true
       setAlarmList([...alarmList])
     }
   }, [payload])
-
-  useEffect(() => {
-    setTimeout(() => handle_message(`${deviceCode}/register`, `{"deviceCode":"${deviceCode}"}`), 10000)
-  }, [])
-
+  
   const mqttSub = (subscription) => {
     if (client) {
       // topic & QoS for MQTT subscribing

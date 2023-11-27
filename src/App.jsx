@@ -5,6 +5,8 @@ import {
 } from 'react-router-dom'
 import MqttWrapper from './components/MqttWrapper'
 import { Connect, Home, Register, Alarm, ConnectBulb } from './routes'
+import { MqttHost, MqttPort } from './util/Constant';
+import { DEVICE_CODE, MQTT_PASS, MQTT_USER } from './util/Config';
 
 const router = createBrowserRouter([
     {
@@ -21,26 +23,18 @@ const router = createBrowserRouter([
     },
     {
       path: '/home',
-      element: <Home />
+      element: <Home/>
     },
     {
       path: '/alarm',
-      element: <Alarm />,
+      element: <Alarm/>,
     }
   ]);
 
 const App = ({}) => {
     return (
         <div id='app'>
-            <MqttWrapper
-                deviceCode='SSAC12'
-                protocol='ws'
-                host='34.87.44.54'
-                clientId='SSAC12'
-                port={9001}
-                username='admin'
-                password='123456789'
-            >
+            <MqttWrapper>
                 <RouterProvider router={router} />
             </MqttWrapper>
         </div>
