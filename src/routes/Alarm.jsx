@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useRef } from 'react';
 import { AlarmTriggerContext } from '../components/MqttWrapper';
+import AlarmStopButton from '../components/AlarmStopButton';
 import Clock from '../components/Clock';
 
 // Audio file URL
@@ -36,11 +37,9 @@ const Alarm = () => {
 
   return (
     <>
+      <div className="alarm-desc">{Object.keys(alarmTrigger).length === 0 ? "Alarm" : alarmTrigger.description}</div>
       <Clock />
-      {/* Display alarm description */}
-      {alarmTrigger && alarmTrigger.description && (
-        <p>{alarmTrigger.description}</p>
-      )}
+      <AlarmStopButton/>
     </>
   );
 };

@@ -242,3 +242,16 @@ button:focus-visible {
   top: 522px;
   left: 165px;
 }
+
+.alarm-desc {
+  font-size: 72px;
+  font-weight: 700;
+  color: var(--steel-black);
+  width: 1000px;
+  height: 72px;
+  position: fixed;
+  top: 100px;
+  left: 140px;
+  line-height: 72px;
+  text-align: center;
+}
