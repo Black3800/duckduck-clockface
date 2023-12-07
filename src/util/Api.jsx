@@ -33,4 +33,16 @@ const getAlarm = () => {
   return api.get('/alarms')
 }
 
-export { login, getAlarm }
+const setBulbPower = async (power) => {
+  if (localStorage.getItem('lightId') === null) {
+    await api.get('/light-control').then((response) => {
+      const lightId = response.data.data.id
+      localStorage.setItem('lightId', lightId)
+    })
+  }
+  return await api.patch(`/switch-status/${localStorage.getItem('lightId')}`, {
+    on: power
+  })
+}
+
+export { login, getAlarm, setBulbPower }

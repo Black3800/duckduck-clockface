@@ -4,19 +4,17 @@ import AlarmStopButton from '../components/AlarmStopButton';
 import Clock from '../components/Clock';
 import { useNavigate } from 'react-router-dom';
 
-// Audio file URL
-const audioUrl = 'https://storage.googleapis.com/duckduck-bucket/alarm-sound/digital.mp3'; // Replace this with your audio file URL
-
 const Alarm = () => {
   const { alarmList, setAlarmList } = useContext(AlarmContext);
   const { alarmTrigger, setAlarmTrigger } = useContext(AlarmTriggerContext);
   const navigate = useNavigate();
-  const audioRef = useRef(new Audio(audioUrl));
+  const audioRef = useRef(new Audio(alarmTrigger.current_alarm_sound_path));
 
   useEffect(() => {
+    console.log(alarmTrigger.volume)
     const audio = audioRef.current;
     audio.loop = true;
-    // audio.volume = alarmTrigger.volume;
+    audio.volume = alarmTrigger.volume / 100;
     console.log('alarmTrigger: '+alarmTrigger);
     console.log('alarmList: '+alarmList);
 

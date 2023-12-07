@@ -4,21 +4,19 @@ import { AlarmContext, AlarmTriggerContext, SweetDreamsTriggerContext } from '..
 import Clock from '../components/Clock'
 import AlarmPopup from '../components/AlarmPopup'
 import { login } from '../util/Api'
-
-const audioUrl = 'https://storage.googleapis.com/duckduck-bucket/lullaby-song/Instrument/cradle-of-soul.mp3';
+import LightControl from '../components/LightControl'
 
 export default function Home() {
   const {alarmList} = useContext(AlarmContext)
   const { setAlarmTrigger } = useContext(AlarmTriggerContext)
   const { sweetDreamsTrigger }  = useContext(SweetDreamsTriggerContext)
   const navigate = useNavigate()
-
-  const audioRef = useRef(new Audio(audioUrl));
+  const audioRef = useRef(new Audio());
 
   useEffect(() => {
     const audio = audioRef.current;
     audio.loop = true;
-    // audio.volume = 0.2;
+    audio.volume = 0.3;
 
     const playAudio = async () => {
       try {
@@ -30,6 +28,7 @@ export default function Home() {
     };
 
     if (sweetDreamsTrigger && sweetDreamsTrigger.audioUrl) {
+      audio.src = sweetDreamsTrigger.audioUrl;
       playAudio();
     } else {
       audio.pause();
@@ -44,7 +43,6 @@ export default function Home() {
 
   useEffect(() => {
     for (const alarm of alarmList) {
-      console.log(alarm)
       if (alarm.trigger === true) {
         setAlarmTrigger(alarm)
         navigate('/alarm')
@@ -60,6 +58,11 @@ export default function Home() {
     <>
       <AlarmPopup/>
       <Clock/>
+      <LightControl/>
+      {(sweetDreamsTrigger && sweetDreamsTrigger.audioUrl) ? 
+        <div className="bedtime-overlay"></div> : 
+        null
+      }
     </>
   );
 }

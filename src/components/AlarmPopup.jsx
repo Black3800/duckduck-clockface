@@ -2,11 +2,16 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Box, Container, Grid, Paper } from '@mui/material';
 import AlarmIcon from '@mui/icons-material/Alarm';
 import { AlarmContext } from '../components/MqttWrapper'
-import { GetUpcomingDayIndex } from '../util/HelperFunction';
+import { DaysInWeek } from '../util/Constant';
+
+const weekday = {
+  'sun': 0, 'mon': 1, 'tue': 2, 'wed': 3, 'thu': 4, 'fri': 5, 'sat': 6
+};
 
 export default function AlarmPopup() {
-  const { alarmList } = useContext(AlarmContext)
+  const {alarmList} = useContext(AlarmContext)
   const [nextAlarm, setNextAlarm] = useState(null)
+  const [nextAlarmDate, setNextAlarmDate] = useState('')
 
   useEffect(() => {
     // Get current date and time
@@ -22,17 +27,15 @@ export default function AlarmPopup() {
 
     // Find the next alarm after the current time
     let newNextAlarm = null;
+    let newNextAlarmDate = null;
 
     for (const alarm of alarmList) {
-      const alarmHour = alarm.bed_time.hours;
-      const alarmMinute = alarm.bed_time.minutes;
+      const alarmHour = alarm.wake_up_time.hours;
+      const alarmMinute = alarm.wake_up_time.minutes;
 
       for (const day of alarm.repeat_days) {
-          const weekday = {
-              'sun': 0, 'mon': 1, 'tue': 2, 'wed': 3, 'thu': 4, 'fri': 5, 'sat': 6
-          }[day];
-
-          const nextDay = nextWeekdayDate(currentDateTime, weekday);
+          const week_day = weekday[day];
+          const nextDay = nextWeekdayDate(currentDateTime, week_day);
           const alarmDate = new Date(
               nextDay.getFullYear(),
               nextDay.getMonth(),
@@ -41,21 +44,22 @@ export default function AlarmPopup() {
               alarmMinute
           );
 
-          if (alarmDate > currentDateTime && (nextAlarm === null || alarmDate < nextAlarm)) {
+          if (alarmDate > currentDateTime && (newNextAlarm === null || alarmDate < newNextAlarmDate)) {
               newNextAlarm = alarm;
+              newNextAlarmDate = alarmDate;
           }
       }
     }
 
     // Check if a next alarm was found
-    if (nextAlarm) {
-      console.log(`The next alarm is scheduled for: ${nextAlarm.toLocaleString()}`);
-      setNextAlarm(newNextAlarm)
+    if (newNextAlarm) {
+      // console.log(`The next alarm is scheduled for: ${nextAlarm.toLocaleString()}`);
+      setNextAlarmDate(`${DaysInWeek[newNextAlarmDate.getDay()]}, ${formatAlarmTime(newNextAlarm.wake_up_time)}`);
+      setNextAlarm(newNextAlarm);
     } else {
       console.log("No future alarms found.");
     }
     
-    // alarmList.toSorted((a, b) => GetUpcomingDayIndex(a.repeat_days) - GetUpcomingDayIndex(b.repeat_days))
   }, [alarmList])
 
   function formatAlarmTime(time) {
@@ -87,7 +91,7 @@ export default function AlarmPopup() {
           fontSize: '24px',
           background: 'var(--frost-white)',
           margin: 0
-        }}>{alarmList.length > 0 ? <Box>Next alarm at {formatAlarmTime(alarmList.toSorted((a, b) => GetUpcomingDayIndex(a.repeat_days) - GetUpcomingDayIndex(b.repeat_days))[0].wake_up_time)}</Box> : 'No alarm set'}</Container>
+        }}>{(alarmList.length > 0 && nextAlarm !== null && nextAlarmDate !== null) ? <Box>Next alarm on {nextAlarmDate}</Box> : 'No alarm set'}</Container>
       </Grid>
     </Paper>
   );

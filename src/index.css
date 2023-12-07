@@ -33,6 +33,20 @@ html, body, #root, #root>div, #app {
   justify-content: center; */
 }
 
+.bedtime-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  backdrop-filter: brightness(30%);
+  z-index: 10;
+}
+
+.awake {
+  filter: none;
+}
+
 a {
   font-weight: 500;
   color: #646cff;
@@ -254,4 +268,18 @@ button:focus-visible {
   left: 140px;
   line-height: 72px;
   text-align: center;
+}
+
+.light-control {
+  width: 100px;
+  height: 100px;
+  position: fixed!important;
+  left: 12px;
+  bottom: 12px;
+  background-color: rgba(253, 254, 253, 0.9)!important;
+  box-shadow: 0px 1px 5px 1px rgba(42,42,42,0.1);
+}
+
+.light-control:active {
+  background-color: rgba(253, 254, 253, 0.9);
 }
