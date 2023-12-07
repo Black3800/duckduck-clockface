@@ -1,5 +1,5 @@
-const DEVICE_CODE = 'SSAC12'
-const DEVICE_SECRET = 'duckduck12'
+const DEVICE_CODE = 'SSAC78'
+const DEVICE_SECRET = 'duckduck78'
 const MQTT_USER = 'admin'
 const MQTT_PASS = '123456789'
 

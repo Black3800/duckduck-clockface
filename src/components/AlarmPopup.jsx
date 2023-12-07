@@ -5,7 +5,7 @@ import { AlarmContext } from '../components/MqttWrapper'
 import { GetUpcomingDayIndex } from '../util/HelperFunction';
 
 export default function AlarmPopup() {
-  const alarmList = useContext(AlarmContext)
+  const { alarmList } = useContext(AlarmContext)
   const [nextAlarm, setNextAlarm] = useState(null)
 
   useEffect(() => {

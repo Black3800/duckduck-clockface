@@ -138,7 +138,7 @@ const MqttWrapper = ({ children }) => {
   return (
     <ClientContext.Provider value={client}>
       <RegisterContext.Provider value={isRegistered}>
-        <AlarmContext.Provider value={alarmList}>
+        <AlarmContext.Provider value={{alarmList, setAlarmList}}>
           <AlarmTriggerContext.Provider value={{alarmTrigger, setAlarmTrigger}}>
             <SweetDreamsTriggerContext.Provider value={{sweetDreamsTrigger, setSweetDreamsTrigger}}>
               {children}

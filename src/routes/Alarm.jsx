@@ -16,7 +16,7 @@ const Alarm = () => {
   useEffect(() => {
     const audio = audioRef.current;
     audio.loop = true;
-    audio.volume = alarmTrigger.volume;
+    // audio.volume = alarmTrigger.volume;
     console.log('alarmTrigger: '+alarmTrigger);
     console.log('alarmList: '+alarmList);
 

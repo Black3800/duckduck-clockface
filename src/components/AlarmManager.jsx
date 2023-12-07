@@ -3,7 +3,7 @@ import { AlarmContext } from '../components/MqttWrapper'
 import { useNavigate } from 'react-router-dom'
 
 export default function AlarmManager({children}) {
-  const alarmList = useContext(AlarmContext)
+  const {alarmList} = useContext(AlarmContext)
   const alarmTimeout = useRef({})
   const navigate = useNavigate()
 
