@@ -1,13 +1,10 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom';
 import { Box, Button } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 
-export default function AlarmStopButton() {
-  const navigate = useNavigate()
-
+export default function AlarmStopButton({onClick}) {
   return (
-    <Button variant='contained' onClick={() => navigate('/home')} sx={{
+    <Button variant='contained' onClick={onClick} sx={{
         backgroundColor: 'var(--sky-blue)',
         fontSize: '48px',
         fontWeight: '600',

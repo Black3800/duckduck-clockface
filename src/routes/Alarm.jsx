@@ -1,17 +1,23 @@
 import React, { useContext, useEffect, useRef } from 'react';
-import { AlarmTriggerContext } from '../components/MqttWrapper';
+import { AlarmContext, AlarmTriggerContext } from '../components/MqttWrapper';
 import AlarmStopButton from '../components/AlarmStopButton';
 import Clock from '../components/Clock';
+import { useNavigate } from 'react-router-dom';
 
 // Audio file URL
 const audioUrl = 'https://storage.googleapis.com/duckduck-bucket/alarm-sound/digital.mp3'; // Replace this with your audio file URL
 
 const Alarm = () => {
-  const { alarmTrigger } = useContext(AlarmTriggerContext);
+  const { alarmList, setAlarmList } = useContext(AlarmContext);
+  const { alarmTrigger, setAlarmTrigger } = useContext(AlarmTriggerContext);
+  const navigate = useNavigate();
   const audioRef = useRef(new Audio(audioUrl));
 
   useEffect(() => {
     const audio = audioRef.current;
+    audio.loop = true;
+    console.log('alarmTrigger: '+alarmTrigger);
+    console.log('alarmList: '+alarmList);
 
     const playAudio = async () => {
       try {
@@ -34,12 +40,20 @@ const Alarm = () => {
       audio.currentTime = 0;
     };
   }, [alarmTrigger]);
+  
+  function stopAlarm() {
+    const index = alarmList.findIndex((e) => e.trigger === true)
+    alarmList[index].trigger = false
+    setAlarmList([...alarmList])
+    setAlarmTrigger({});
+    navigate('/home');
+  }
 
   return (
     <>
       <div className="alarm-desc">{Object.keys(alarmTrigger).length === 0 ? "Alarm" : alarmTrigger.description}</div>
       <Clock />
-      <AlarmStopButton/>
+      <AlarmStopButton onClick={stopAlarm}/>
     </>
   );
 };

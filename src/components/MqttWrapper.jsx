@@ -8,6 +8,7 @@ export const RegisterContext = createContext()
 export const ClientContext = createContext()
 export const AlarmContext = createContext([])
 export const AlarmTriggerContext = createContext({})
+export const SweetDreamsTriggerContext = createContext({})
 
 const MqttWrapper = ({ children }) => {
   const initialized = useRef(false);
@@ -15,6 +16,7 @@ const MqttWrapper = ({ children }) => {
   const [client, setClient] = useState(null)
   const [alarmList, setAlarmList] = useState([])
   const [alarmTrigger, setAlarmTrigger] = useState({})
+  const [sweetDreamsTrigger, setSweetDreamsTrigger] = useState({})
   const [isRegistered, setIsRegistered] = useState(localStorage.getItem('isRegistered') == 'true' || false)
 
   const [payload, setPayload] = useState({})
@@ -110,6 +112,10 @@ const MqttWrapper = ({ children }) => {
       const index = alarmList.findIndex((e) => e.id === payload.payload.id)
       alarmList[index].trigger = true
       setAlarmList([...alarmList])
+    } else if (payload.topic === `${deviceCode}/sweet-dreams`) {
+      setSweetDreamsTrigger({
+        ...payload.payload
+      })
     }
   }, [payload])
   
@@ -134,7 +140,9 @@ const MqttWrapper = ({ children }) => {
       <RegisterContext.Provider value={isRegistered}>
         <AlarmContext.Provider value={alarmList}>
           <AlarmTriggerContext.Provider value={{alarmTrigger, setAlarmTrigger}}>
-            {children}
+            <SweetDreamsTriggerContext.Provider value={{sweetDreamsTrigger, setSweetDreamsTrigger}}>
+              {children}
+            </SweetDreamsTriggerContext.Provider>
           </AlarmTriggerContext.Provider>
         </AlarmContext.Provider>
       </RegisterContext.Provider>
