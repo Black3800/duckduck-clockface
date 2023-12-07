@@ -18,6 +18,7 @@ export default function Home() {
   useEffect(() => {
     const audio = audioRef.current;
     audio.loop = true;
+    audio.volume = 0.2;
 
     const playAudio = async () => {
       try {
