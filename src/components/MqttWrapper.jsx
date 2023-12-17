@@ -34,60 +34,91 @@ const MqttWrapper = ({ children }) => {
     setClient(mqtt.connect(host, mqttOption))
   }
 
+  const socketConnect = () => {
+    const socket = new WebSocket('ws://localhost:8080')
+
+    // Connection opened
+    socket.addEventListener("open", event => {
+      console.log("Connection established")
+    });
+
+    // Listen for messages
+    socket.addEventListener("message", event => {
+      const data = JSON.parse(event.data)
+      handle_message(data.topic, data.payload)
+    });
+    setClient(socket)
+  }
+
   const createAlarm = (payload) => {
     _alarmList.push(payload)
   }
 
   const handle_message = (topic, message) => {
-    console.log(`received message: ${message} from topic: ${topic}`)
-    let payload = JSON.parse(message)
-    setPayload({topic,payload})
+    console.log('received message:', message, 'from topic:', topic)
+    setPayload({topic,message})
   }
 
-  useEffect(() => {
-    if (client) {
-      client.on('connect', () => {
-        console.log('connection successful')
-        mqttSub({
-          'topic': `${deviceCode}/#`,
-          qos: 2
-        })
-      })
-      
-      client.on('error', (err) => {
-        console.error('Connection error: ', err)
-        client.end()
-      })
+//   useEffect(() => {
+//     const socket = new WebSocket("ws://localhost:8080")
 
-      client.on('reconnect', () => {
-        console.log('reconn')
-      })
+// // Connection opened
+// socket.addEventListener("open", event => {
+//   socket.send("Connection established")
+// });
+
+// // Listen for messages
+// socket.addEventListener("message", event => {
+//   console.log("Message from server ", event.data)
+// });
+
+  //   if (client) {
+  //     client.on('connect', () => {
+  //       console.log('connection successful')
+  //       mqttSub({
+  //         'topic': `${deviceCode}/#`,
+  //         qos: 2
+  //       })
+  //     })
       
-      client.on('message', handle_message)
-    }
-  }, [client])
+  //     client.on('error', (err) => {
+  //       console.error('Connection error: ', err)
+  //       client.end()
+  //     })
+
+  //     client.on('reconnect', () => {
+  //       console.log('reconn')
+  //     })
+      
+  //     client.on('message', handle_message)
+  //   }
+  // }, [client])
 
   useEffect(() => {
+    // if (!initialized.current) {
+    //   initialized.current = true
+    //   const url = `${protocol}://${host}:${port}/mqtt`
+    //   const options = {
+    //     clientId,
+    //     username,
+    //     password,
+    //     clean: false,
+    //     reconnectPeriod: 1000, // ms
+    //     connectTimeout: 30 * 1000, // ms
+    //     protocolVersion: 5
+    //   }
+    //   mqttConnect(url, options)
+    //   getAlarm().then((response) => {
+    //     if (response.data.success === true) {
+    //       setAlarmList([...response.data.data])
+    //     }
+    //   }).catch(error => {
+    //     login()
+    //   })
+    // }
     if (!initialized.current) {
       initialized.current = true
-      const url = `${protocol}://${host}:${port}/mqtt`
-      const options = {
-        clientId,
-        username,
-        password,
-        clean: false,
-        reconnectPeriod: 1000, // ms
-        connectTimeout: 30 * 1000, // ms
-        protocolVersion: 5
-      }
-      mqttConnect(url, options)
-      getAlarm().then((response) => {
-        if (response.data.success === true) {
-          setAlarmList([...response.data.data])
-        }
-      }).catch(error => {
-        login()
-      })
+      socketConnect()
     }
   }, [])
 
@@ -116,24 +147,10 @@ const MqttWrapper = ({ children }) => {
       setSweetDreamsTrigger({
         ...payload.payload
       })
+    } else if (payload.topic === `${deviceCode}/ping`) {
+      console.log('ping', payload.message.c)
     }
   }, [payload])
-  
-  const mqttSub = (subscription) => {
-    if (client) {
-      // topic & QoS for MQTT subscribing
-      const { topic, qos } = subscription
-      // subscribe topic
-      // https://github.com/mqttjs/MQTT.js#mqttclientsubscribetopictopic-arraytopic-object-options-callback
-      client.subscribe(topic, { qos }, (error) => {
-        if (error) {
-          console.log('Subscribe to topics error', error)
-          return
-        }
-        console.log(`Subscribe to topics: ${topic}`)
-      })
-    }
-  }
 
   return (
     <ClientContext.Provider value={client}>
