@@ -56,7 +56,10 @@ const MqttWrapper = ({ children }) => {
 
   const handle_message = (topic, message) => {
     console.log('received message:', message, 'from topic:', topic)
-    setPayload({topic,message})
+    setPayload({
+      topic,
+      payload: message
+    })
   }
 
 //   useEffect(() => {
@@ -123,6 +126,7 @@ const MqttWrapper = ({ children }) => {
   }, [])
 
   useEffect(() => {
+    console.log(payload)
     if (payload.topic === `${deviceCode}/register`) {
       if (payload.payload.device_code == deviceCode) {
         localStorage.setItem('isRegistered', true)
@@ -130,25 +134,33 @@ const MqttWrapper = ({ children }) => {
       }
     }
     else if (payload.topic === `${deviceCode}/create-alarm`) {
-      delete payload.topic
-      setAlarmList([
-        ...alarmList,
-        payload.payload
-      ])
+      delete payload.topic;
+      if (payload.payload.is_active.status === true) {
+        setAlarmList([...alarmList, payload.payload]);
+      }
+    } else if (payload.topic === `${deviceCode}/update-alarm`) {
+      delete payload.topic;
+      const newAlarmList = alarmList.filter(
+        (alarm) => alarm.id != payload.payload.id
+      );
+      if (payload.payload.is_active.status === true) {
+        newAlarmList.push(payload.payload);
+      }
+      setAlarmList([...newAlarmList]);
     } else if (payload.topic === `${deviceCode}/delete-alarm`) {
       setAlarmList([
-        ...alarmList.filter((alarm) => alarm.id != payload.payload.id)
-      ])
+        ...alarmList.filter((alarm) => alarm.id != payload.payload.id),
+      ]);
     } else if (payload.topic === `${deviceCode}/trigger-alarm`) {
-      const index = alarmList.findIndex((e) => e.id === payload.payload.id)
-      alarmList[index].trigger = true
-      setAlarmList([...alarmList])
+      const index = alarmList.findIndex((e) => e.id === payload.payload.id);
+      alarmList[index].trigger = true;
+      setAlarmList([...alarmList]);
     } else if (payload.topic === `${deviceCode}/sweet-dreams`) {
       setSweetDreamsTrigger({
-        ...payload.payload
-      })
+        ...payload.payload,
+      });
     } else if (payload.topic === `${deviceCode}/ping`) {
-      console.log('ping', payload.message.c)
+      console.log("ping", payload.message.c);
     }
   }, [payload])
 

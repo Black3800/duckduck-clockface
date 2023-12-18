@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AlarmContext, AlarmTriggerContext, SweetDreamsTriggerContext } from '../components/MqttWrapper'
 import Clock from '../components/Clock'
@@ -12,6 +12,7 @@ export default function Home() {
   const { sweetDreamsTrigger }  = useContext(SweetDreamsTriggerContext)
   const navigate = useNavigate()
   const audioRef = useRef(new Audio());
+  const [showOverlay, setShowOverlay] = useState(false)
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -29,6 +30,7 @@ export default function Home() {
 
     if (sweetDreamsTrigger && sweetDreamsTrigger.audioUrl) {
       audio.src = sweetDreamsTrigger.audioUrl;
+      setShowOverlay(true);
       playAudio();
     } else {
       audio.pause();
@@ -45,6 +47,7 @@ export default function Home() {
     for (const alarm of alarmList) {
       if (alarm.trigger === true) {
         setAlarmTrigger(alarm)
+        setShowOverlay(false)
         navigate('/alarm')
       }
     }
@@ -59,7 +62,7 @@ export default function Home() {
       <AlarmPopup/>
       <Clock/>
       <LightControl/>
-      {(sweetDreamsTrigger && sweetDreamsTrigger.audioUrl) ? 
+      {showOverlay ? 
         <div className="bedtime-overlay"></div> : 
         null
       }
