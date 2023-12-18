@@ -62,10 +62,10 @@ export default function Home() {
       <AlarmPopup/>
       <Clock/>
       <LightControl/>
-      {showOverlay ? 
+      {/* {showOverlay ? 
         <div className="bedtime-overlay"></div> : 
         null
-      }
+      } */}
     </>
   );
 }
