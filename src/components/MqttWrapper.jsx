@@ -35,19 +35,26 @@ const MqttWrapper = ({ children }) => {
   }
 
   const socketConnect = () => {
-    const socket = new WebSocket('ws://localhost:8080')
+    const socket = new WebSocket("ws://localhost:8080");
 
     // Connection opened
-    socket.addEventListener("open", event => {
-      console.log("Connection established")
+    socket.addEventListener("open", (event) => {
+      console.log("Connection established");
     });
 
     // Listen for messages
-    socket.addEventListener("message", event => {
-      const data = JSON.parse(event.data)
-      handle_message(data.topic, data.payload)
+    socket.addEventListener("message", (event) => {
+      const data = JSON.parse(event.data);
+      handle_message(data.topic, data.payload);
     });
-    setClient(socket)
+    setClient(socket);
+      getAlarm().then((response) => {
+        if (response.data.success === true) {
+          setAlarmList([...response.data.data])
+        }
+      }).catch(error => {
+        login()
+      })
   }
 
   const createAlarm = (payload) => {
